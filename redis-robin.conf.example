@@ -1,3 +1,5 @@
-# i am comment
+# This is comment line.
+# Every used line is host:port string of redis server
+# from the pool you want to save one after another.
 
 localhost:6379
