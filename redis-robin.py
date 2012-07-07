@@ -96,17 +96,34 @@ class Redis(object):
 
 class Robin(object):
 
-    def __init__(self, instances, logger):
-        self.instances = instances
-        self.logger    = logger
+    def __init__(self, instances, logger, success_file):
+        self.instances    = instances
+        self.logger       = logger
+        self.success_file = success_file
 
     def run(self):
+        success = True
         for instance in self.instances:
-            redis = Redis(instance[0], instance[1])
+            if not self.process_instance(instance):
+                success = False
+
+        if success and self.success_file is not None:
+            with open(self.success_file, "w") as success_file:
+                success_file.write(str(int(time.time())) + "\n")
+
+
+    def process_instance(self, instance):
+        redis = Redis(instance[0], instance[1])
+        try:
             if logger:
                 redis.set_logger(self.logger)
             if redis.check():
                 redis.save()
+                return True
+            return False
+        except Exception as e:
+            redis.log("Got exception: " + str(e))
+            return False
 
 
 
@@ -135,6 +152,5 @@ if __name__ == "__main__":
     logger = None
     if args.log_file is not None:
         logger = Logger(args.log_file)
-
-    robin = Robin(get_instances(args.config_file), logger)
+    robin = Robin(get_instances(args.config_file), logger, args.success_file)
     robin.run()
