@@ -1,4 +1,4 @@
-__author__ = 'bobrik'
+#!/usr/bin/env python
 
 import socket
 import time
