@@ -3,7 +3,19 @@
 Redis robin will help you to keep bunch of redis servers from saving to disk at the same time.
 Define your pool, add redis-robin to crontab and monitor your cluster with zabbix (or not).
 
+## Why do I need it?
+
+Redis itself may save data to disk, of course.
+
+But if you have 8 redis servers on 8 CPU and 8Gb server under load and each redis server keeps 800Mb of memory,
+you may go out of memory all of your redis servers start saving at the same moment. Redis Robin will prevent them
+from this mistake. It will save every server one after another keeping some free memory for everybody.
+
+Just as simple as that.
+
 ## Configuration
+
+Disable `save` option in your redis.config for each server to keep them from making it automatically.
 
 Example configuration file (`/etc/redis-robin.conf` used by default):
 
