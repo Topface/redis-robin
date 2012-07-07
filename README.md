@@ -45,7 +45,15 @@ It's very useful too add this line to crontab, just like that:
 
 ## Monitoring with zabbix
 
-To be written.
+If you want to be sure that everything goes okay with your redis servers' persistence, you may monitor redis-robin with zabbix.
+
+1. Make sure that you use `--success-file` (`-s`) option when you run `redis-robin`. For example, you keep success file in `/tmp/redis-robin.success`.
+
+2. Add item to zabbix to monitor success file mtime: `vfs.file.time[/tmp/redis-robin.success,modify]`.
+
+3. Add `fuzzytime` trigger to your item. If you want to keep your pool not above 10 minutes from persistent storage (disk): `{webserver:vfs.file.time[/tmp/redis-robin.success,modify]}.fuzzytime(600)}=0`.
+
+This will fire your trigger if last success save of your pool was more than 10 minutes (600 seconds) in the past.
 
 ## Author
 
