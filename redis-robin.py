@@ -18,7 +18,7 @@ class Logger(object):
 
 
     def get_line(self, message):
-        return time.strftime("[%Y-%m-%d %H:%m:%S] ") + message
+        return time.strftime("[%Y-%m-%d %H:%M:%S] ") + message
 
 
     def __del__(self):
