@@ -63,7 +63,7 @@ class Redis(object):
     def get_info(self):
         result = {}
         for line in self.simple_ask("INFO").split("\n"):
-            if len(line):
+            if not line:
                 continue
             (key, value) = line.split(":")
             result[key] = value
