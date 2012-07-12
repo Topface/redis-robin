@@ -117,7 +117,7 @@ class Robin(object):
     def process_instance(self, instance):
         redis = Redis(instance[0], instance[1])
         try:
-            if logger:
+            if self.logger:
                 redis.set_logger(self.logger)
             if redis.check():
                 redis.save()
