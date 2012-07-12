@@ -75,7 +75,7 @@ class Redis(object):
 
 
     def is_saving(self):
-        return self.get_info()["bgsave_in_progress"] == 1
+        return int(self.get_info()["bgsave_in_progress"]) == 1
 
 
     def check(self):
