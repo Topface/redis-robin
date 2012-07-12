@@ -6,13 +6,15 @@ import time
 
 class Logger(object):
 
-    def __init__(self, path):
-        self.fd = open(path, "a")
+    def __init__(self, path, verbose):
+        self.fd      = open(path, "a")
+        self.verbose = verbose
 
 
     def write(self, message):
         self.fd.write(self.get_line(message) + "\n")
-        print self.get_line(message)
+        if self.verbose:
+            print self.get_line(message)
 
 
     def get_line(self, message):
@@ -135,6 +137,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--config-file", help="config file location", default="/etc/redis-robin.conf", type=str, metavar="path")
     parser.add_argument("-l", "--log-file", help="log file location", type=str, metavar="path")
     parser.add_argument("-s", "--success-file", help="file to store latest success unix timestamp", type=str, metavar="path")
+    parser.add_argument("-v", "--verbose", help="duplocate log to stdout", action="store_true")
 
     args = parser.parse_args(sys.argv[1:])
 
@@ -151,6 +154,7 @@ if __name__ == "__main__":
 
     logger = None
     if args.log_file is not None:
-        logger = Logger(args.log_file)
+        logger = Logger(args.log_file, args.verbose)
+
     robin = Robin(get_instances(args.config_file), logger, args.success_file)
     robin.run()
