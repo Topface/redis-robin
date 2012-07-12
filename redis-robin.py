@@ -132,6 +132,7 @@ class Robin(object):
 if __name__ == "__main__":
     import sys
     import argparse
+    import fcntl
 
     parser = argparse.ArgumentParser(description="Save redis data to disk for good.")
     parser.add_argument("-c", "--config-file", help="config file location", default="/etc/redis-robin.conf", type=str, metavar="path")
@@ -156,5 +157,16 @@ if __name__ == "__main__":
     if args.log_file is not None:
         logger = Logger(args.log_file, args.verbose)
 
-    robin = Robin(get_instances(args.config_file), logger, args.success_file)
-    robin.run()
+    locked = True
+    try:
+        lock = open("/tmp/redis-robin.lock", "w")
+        fcntl.lockf(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except IOError:
+        locked = False
+
+    if locked:
+        robin = Robin(get_instances(args.config_file), logger, args.success_file)
+        robin.run()
+    else:
+        if logger:
+            logger.write("Could not get lock, exiting")
