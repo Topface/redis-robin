@@ -137,6 +137,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Save redis data to disk for good.")
     parser.add_argument("-c", "--config-file", help="config file location", default="/etc/redis-robin.conf", type=str, metavar="path")
     parser.add_argument("-l", "--log-file", help="log file location", type=str, metavar="path")
+    parser.add_argument("-k", "--lock-file", help="lock file location", default="/tmp/redis-robin.lock", type=str, metavar="path")
     parser.add_argument("-s", "--success-file", help="file to store latest success unix timestamp", type=str, metavar="path")
     parser.add_argument("-v", "--verbose", help="duplocate log to stdout", action="store_true")
 
@@ -159,7 +160,7 @@ if __name__ == "__main__":
 
     locked = True
     try:
-        lock = open("/tmp/redis-robin.lock", "w")
+        lock = open(args.lock_file, "w")
         fcntl.lockf(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError:
         locked = False
