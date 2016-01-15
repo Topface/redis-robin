@@ -76,7 +76,7 @@ class Redis(object):
 
     def is_saving(self):
 	version = self.get_info()["redis_version"].split(".")
-	if int(version[1]) == 6 or int(version[1]) == 8:
+	if int(version[1]) == 6 or int(version[1]) == 8 or int(version[0]) == 3:
     	    return int(self.get_info()["rdb_bgsave_in_progress"]) == 1
 	else:
 	    return int(self.get_info()["bgsave_in_progress"]) == 1
